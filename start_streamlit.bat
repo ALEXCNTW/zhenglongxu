@@ -1,6 +1,13 @@
+@echo off
+echo Activating virtual environment...
 call .venv\Scripts\activate
+
+echo Installing required packages from requirements.txt...
+pip install -r requirements.txt
+
+echo Starting Streamlit app without file watch...
 set STREAMLIT_WATCH_FILE_SYSTEM=false
-set STREAMLIT_SERVER_RUN_ON_SAVE=false
-streamlit run main_streamlit.py
+streamlit run main_streamlit.py --server.runOnSave false
+
 pause
 
