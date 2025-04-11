@@ -1,3 +1,4 @@
+#This part is to use training model to predict
 import torch
 import joblib
 from models.train_fno import FNO1dClassifier as FNO1d
@@ -15,18 +16,16 @@ def load_model(path="models/fno_model.pth"):
         raise
     return model
 
+#Prediction
 def predict_result(odds_list, model=None):
     if model is None:
         model = load_model()
-
     odds_scaled = scaler.transform([odds_list])
     x = torch.tensor(odds_scaled, dtype=torch.float32).reshape(1, 1, 3)
-
     with torch.no_grad():
         logits = model(x)
         probs = torch.softmax(logits, dim=1).numpy().flatten()
         idx = probs.argmax()
-
     label_map = {0: "Home win", 1: "Draw", 2: "Away win"}
     return label_map[idx], probs[idx]
 

@@ -1,3 +1,5 @@
+#This is a preprocess part. Read all the datas and get features in them. Save as .pkl .
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -21,7 +23,6 @@ def load_all_data():
         "C:/Users/10699/Desktop/PythonProject/data/2022-2023.csv",
         "C:/Users/10699/Desktop/PythonProject/data/2023-2024.csv"
     ]
-
     dfs = []
     for season in seasons:
         path = os.path.join("data", season)
@@ -35,10 +36,8 @@ def preprocess_result(df):
     df["label"] = df["FTR"].map(encode_result)
     X = df[["WHH", "WHD", "WHA"]].values
     y = df["label"].values
-
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-
     X_train, X_val, y_train, y_val = train_test_split(
         X_scaled, y, test_size=0.2, random_state=42
     )
@@ -54,19 +53,15 @@ def preprocess_over_under(df):
     df["over_under"] = df.apply(lambda row: encode_over_under(row["FTHG"], row["FTAG"]), axis=1)
     X = df[["B365>2.5", "B365<2.5"]].values
     y = df["over_under"].values
-
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-
     X_train, X_val, y_train, y_val = train_test_split(
         X_scaled, y, test_size=0.2, random_state=42
     )
-
     os.makedirs("data_preprocessing", exist_ok=True)
     np.savez("data_preprocessing/processed_overunder.npz", X_train=X_train, X_val=X_val, y_train=y_train, y_val=y_val)
     joblib.dump(scaler, "data_preprocessing/scaler_overunder.pkl")
     print("Over-Under data preprocessing completed.")
-
 
 if __name__ == "__main__":
     df_all = load_all_data()

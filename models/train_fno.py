@@ -1,3 +1,4 @@
+#This part is a FNO training model
 import numpy as np
 import torch
 import torch.nn as nn
@@ -13,10 +14,8 @@ class SpectralConv1d(nn.Module):
         self.modes = modes
         self.scale = 1 / (in_channels * out_channels)
         self.weights = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, self.modes, dtype=torch.cfloat))
-
     def compl_mul1d(self, input, weights):
         return torch.einsum("bix, ioj -> boj", input, weights)
-
     def forward(self, x):
         x_ft = torch.fft.rfft(x, dim=-1)
         out_ft = torch.zeros(x.size(0), self.out_channels, x_ft.size(-1), dtype=torch.cfloat, device=x.device)
@@ -35,7 +34,6 @@ class FNO1dClassifier(nn.Module):
         self.w = nn.Conv1d(width, width, 1)
         self.fc1 = nn.Linear(width, 64)
         self.fc2 = nn.Linear(64, 3)
-
     def forward(self, x):
         x = self.fc0(x)
         x = x.permute(0, 2, 1)

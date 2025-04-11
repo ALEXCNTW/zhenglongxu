@@ -1,0 +1,12 @@
+pandas
+numpy
+joblib
+nest_asyncio
+matplotlib
+seaborn
+streamlit
+torch
+scikit-learn==1.4.1.post1
+
+
+
